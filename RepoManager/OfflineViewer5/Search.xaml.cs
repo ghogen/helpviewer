@@ -32,9 +32,30 @@ namespace OfflineViewer5
         {
             var results = LuceneSearch.DocSearcher.Search(tbSearchTerm.Text);
             lvResults.Items.Clear();
+            List<string> docs_to_search = new List<string>();
+            if ((bool) cb_cpp.IsChecked)
+            {
+                docs_to_search.Add("cpp-docs");
+            }
+            if ((bool)cb_visualstudio.IsChecked)
+            {
+                docs_to_search.Add("visualstudio-docs");
+            }
+            if ((bool)cb_dotnet.IsChecked)
+            {
+                docs_to_search.Add("dotnet");
+            }
+            if ((bool)cb_sql.IsChecked)
+            {
+                docs_to_search.Add("sql-docs");
+            }
+
             foreach (var item in results)
             {
-                lvResults.Items.Add(item.FileName);
+                if (docs_to_search.Contains(item.DocSet))
+                {
+                    lvResults.Items.Add(item);
+                }
             }
         }
     }

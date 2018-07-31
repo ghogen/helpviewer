@@ -19,12 +19,17 @@ namespace LuceneSearch
         public string Content;
         public string FileName { get; internal set; }
         public string Title { get; internal set; }
+        public string Lede { get; internal set; }
+
+        public string DocSet { get; internal set; }
+
     }
 
     public static class DocSearcher
     {
 
-        private static string _luceneDir = @"c:\users\mblome\OfflineHelp2\index";
+        private static string _luceneDir = 
+            Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\OfflineHelp2\index");
         private static FSDirectory _directoryTemp;
         private static FSDirectory _directory
         {
@@ -44,6 +49,8 @@ namespace LuceneSearch
                 FileName = doc.Get("FileName"),
                 Title = doc.Get("Title"),
                 Content = doc.Get("Content"),
+                Lede = doc.Get("Lede"),
+                DocSet = doc.Get("DocSet")
             };
         }
 

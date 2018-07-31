@@ -11,13 +11,48 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
+            <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
             <TextBox x:Name="tbSearchTerm" Width="400" Text="Search term"></TextBox>
             <Button x:Name="Go" Click="Go_Click">Search</Button>
-        </StackPanel>        
-        <ListView x:Name="lvResults"  Grid.Row="1" ></ListView>
+        </StackPanel>
+        <WrapPanel Grid.Row="1">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock>C++</TextBlock><CheckBox x:Name="cb_cpp" Margin="5,5,20,5"></CheckBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock>Visual Studio</TextBlock>
+                <CheckBox x:Name="cb_visualstudio" Margin="5,5,20,5"></CheckBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock>.NET</TextBlock>
+                <CheckBox x:Name="cb_dotnet" Margin="5,5,20,5"></CheckBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock>SQL</TextBlock>
+                <CheckBox x:Name="cb_sql" Margin="5,5,20,5"></CheckBox>
+            </StackPanel>
+        </WrapPanel>
+        <ListView x:Name="lvResults"  Grid.Row="2" Width="800">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock>
+                        <Hyperlink NavigateUri="{Binding FileName}"><TextBlock Text="{Binding Title}"/></Hyperlink>
+                        </TextBlock>
+                            <TextBlock Text="("></TextBlock>
+                            <TextBlock Text="{Binding DocSet}"></TextBlock>
+                            <TextBlock Text=")"></TextBlock>
+                        </StackPanel>
+
+                        <TextBlock Text="{Binding Lede}" FontWeight="Normal" Margin="5,5,5,5" TextWrapping="Wrap" Width="800"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 
 </Page>

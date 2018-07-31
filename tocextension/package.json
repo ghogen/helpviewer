@@ -4,7 +4,7 @@
     "description": "View Markdown TOC.md files",
     "version": "0.0.1",
     "publisher": "docs",
-    "repository": "https://github.com/ghogen/vscode-tocviewer",
+    "repository": "https://github.com/ghogen/helpviewer",
     "engines": {
         "vscode": "^1.25.0"
     },

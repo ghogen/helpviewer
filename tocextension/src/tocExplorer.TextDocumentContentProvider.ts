@@ -3,7 +3,8 @@ import * as vscode from 'vscode';
 import fs = require('fs');
 import YAML = require("yamljs");
 import { TreeDataProvider } from 'vscode';
-import { Z_FIXED } from 'zlib';
+
+var edge = require('edge-js');
 
 export class TocNode {
 
@@ -197,7 +198,7 @@ export class TocModelMd implements TocModel {
             newNode = new TocNode(titleString, vscode.Uri.file(linkText));
             this.nodes.set(linkText, newNode);
             if (linkText.toLowerCase().includes("toc.md")) {
-                var childTocNode = this.openToc(vscode.Uri.file(linkText), newNode);
+                this.openToc(vscode.Uri.file(linkText), newNode);
             }
         }
         if (parent) {
@@ -467,6 +468,11 @@ export class TocTreeDataProvider implements TreeDataProvider<TocNode>, TextDocum
 	}
 }
 
+/*class SearchResult {
+
+    constructor(readonly Content: string, readonly Filename: string, readonly Title: string) {}
+}*/
+
 export class TocExplorer {
 
     private tocViewerOrUndefined: TreeView<TocNode> | undefined;
@@ -560,8 +566,24 @@ export class TocExplorer {
         }
         // start listening
         this.subscription = vscode.window.onDidChangeActiveTextEditor(this.listener, this);
+
+        // test edge connection
+        this.testEdgeConnection();
        
-	}
+    }
+
+    private testEdgeConnection() {
+        // shall we?
+        //var edge = require('edge');
+        var helloWorld = edge.func(function () {/*
+            async (input) => {
+                return ".NET Welcomes " + input.ToString();
+            }
+        */});
+       // var searchMethod = edge.func('../RepoManager/LuceneSearch/bin/Debug/netstandard2.0/LucerneSearch.dll');
+        //var results : SearchResult[] = searchMethod("test");
+       // results.forEach( (item) => { console.log(item.Content + " " + item.Filename + " " + item.Title)});
+    }
 
 	private openResource(resource: vscode.Uri): void {
         vscode.workspace.openTextDocument(resource).then(document => {

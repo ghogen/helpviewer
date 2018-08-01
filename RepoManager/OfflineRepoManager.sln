@@ -5,9 +5,9 @@ VisualStudioVersion = 15.0.27922.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfflineViewer5", "OfflineViewer5\OfflineViewer5.csproj", "{71389233-381A-47F6-92C2-7CE546C29A41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuceneIndexer", "LuceneIndexer\LuceneIndexer.csproj", "{2CB0D208-793C-4F07-86D7-E3E8DFDF8D95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LuceneIndexer", "LuceneIndexer\LuceneIndexer.csproj", "{2CB0D208-793C-4F07-86D7-E3E8DFDF8D95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuceneSearch", "LuceneSearch\LuceneSearch.csproj", "{2891BE41-1939-4686-8518-86534E50155D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LuceneSearch", "LuceneSearch\LuceneSearch.csproj", "{2891BE41-1939-4686-8518-86534E50155D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

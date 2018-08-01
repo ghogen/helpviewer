@@ -4,6 +4,7 @@ const vscode_1 = require("vscode");
 const vscode = require("vscode");
 const fs = require("fs");
 const YAML = require("yamljs");
+var edge = require('edge-js');
 class TocNode {
     constructor(title, uri) {
         this.tocTitle = title ? title : "";
@@ -144,7 +145,7 @@ class TocModelMd {
             newNode = new TocNode(titleString, vscode.Uri.file(linkText));
             this.nodes.set(linkText, newNode);
             if (linkText.toLowerCase().includes("toc.md")) {
-                var childTocNode = this.openToc(vscode.Uri.file(linkText), newNode);
+                this.openToc(vscode.Uri.file(linkText), newNode);
             }
         }
         if (parent) {
@@ -389,6 +390,10 @@ class TocTreeDataProvider {
     }
 }
 exports.TocTreeDataProvider = TocTreeDataProvider;
+/*class SearchResult {
+
+    constructor(readonly Content: string, readonly Filename: string, readonly Title: string) {}
+}*/
 class TocExplorer {
     listener(event) {
         if (event && event.document.languageId === "markdown") {
@@ -458,6 +463,17 @@ class TocExplorer {
         }
         // start listening
         this.subscription = vscode.window.onDidChangeActiveTextEditor(this.listener, this);
+        // test edge connection
+        this.testEdgeConnection();
+    }
+    testEdgeConnection() {
+        // shall we?
+        //var edge = require('edge');
+        var helloWorld = edge.func(function () {
+        });
+        // var searchMethod = edge.func('../RepoManager/LuceneSearch/bin/Debug/netstandard2.0/LucerneSearch.dll');
+        //var results : SearchResult[] = searchMethod("test");
+        // results.forEach( (item) => { console.log(item.Content + " " + item.Filename + " " + item.Title)});
     }
     openResource(resource) {
         vscode.workspace.openTextDocument(resource).then(document => {

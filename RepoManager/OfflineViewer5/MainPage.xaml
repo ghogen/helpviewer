@@ -22,8 +22,8 @@
         <TextBlock x:Name="Available_repos" Text="Available Repos" Background="AliceBlue" FontSize="16" Margin="5,5,5,5"/>
         <TextBlock Grid.Column="1"  x:Name="Installed_repos" Text="Installed Repos" Background="AliceBlue" FontSize="16" Margin="5,5,5,5"/>
         <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <Button x:Name="GetRepoInfo" FontSize="14" Click="GetRepoInfo_Click" Margin="0,0,635,0">Get Repo Info</Button>
-            <Button x:Name="CloneRepo" FontSize="14" Click="CloneRepo_Click" Margin="0,0,635,0">Clone Repo</Button>
+            <Button x:Name="GetRepoInfo" FontSize="14" Click="GetRepoInfo_Click" Padding="5,5,5,5" Margin="0,0,25,0">Get Available Doc Sets</Button>
+            <Button x:Name="CloneRepo" FontSize="14" Click="CloneRepo_Click" Padding="5,5,5,5" Margin="0,0,5,0">Clone Doc Set</Button>
         </StackPanel>
 
         <ListView 
@@ -31,7 +31,8 @@
             ItemsSource="{Binding Path=repos_available_for_download}"
             Margin="10" 
             x:Name="lv_for_download"
-            Grid.Row="2" >
+            Grid.Row="2" 
+            AlternationCount="2">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -43,12 +44,12 @@
             </ListView.ItemTemplate>
         </ListView>
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
-            
-            <Button x:Name="RemoveRepo" FontSize="11" Click="RemoveRepo_Click" Margin="0,0,0,0">Remove Repo</Button>
-            <Button x:Name="UpdateRepo" FontSize="11" Click="UpdateRepo_Click" Margin="0,0,0,0">Update Repo</Button>
-            <Button x:Name="RefreshUI" FontSize="11" Click="RefreshUI_Click" Margin="0,0,0,0">Update List</Button>
-            <Button x:Name="UpdateIndex" FontSize="11" Click="UpdateIndex_Click" Margin="0,0,0,0">Update Index</Button>
-            <Button x:Name="SearchButton" FontSize="11" Click="SearchButton_Click" Margin="0,0,0,0">Search</Button>
+
+            <Button x:Name="RemoveRepo" FontSize="11" Click="RemoveRepo_Click" Padding="5,5,5,5" Margin="10,0,5,0">Remove Doc Set</Button>
+            <Button x:Name="UpdateRepo" FontSize="11" Click="UpdateRepo_Click" Padding="5,5,5,5" Margin="0,0,5,0">Update Doc Set</Button>
+            <Button x:Name="RefreshUI" FontSize="11" Click="RefreshUI_Click" Padding="5,5,5,5" Margin="0,0,5,0">Update List</Button>
+            <Button x:Name="UpdateIndex" FontSize="11" Click="UpdateIndex_Click" Padding="5,5,5,5" Margin="0,0,5,0">Update Search Index</Button>
+            <Button x:Name="SearchButton" FontSize="11" Click="SearchButton_Click" Padding="5,5,5,5" Margin="0,0,5,0">Search</Button>
         </StackPanel>
         <ListView Height="auto"
             ItemsSource="{Binding Path=repos_installed}"

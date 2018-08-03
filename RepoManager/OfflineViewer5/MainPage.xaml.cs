@@ -40,7 +40,7 @@ namespace OfflineViewer5
     {
         private static HttpClient httpClient = new HttpClient();
         public ObservableCollection<RepoInfo> repos_available_for_download;
-        public ObservableCollection<RepoInfo> repos_installed;
+        public static ObservableCollection<RepoInfo> repos_installed;
         ~MainPage()
         {
             httpClient.Dispose();
@@ -57,10 +57,12 @@ namespace OfflineViewer5
 
             repos_available_for_download = new ObservableCollection<RepoInfo>()
             {
-            new RepoInfo{Name="cpp-docs", Description="Visual C++", LastUpdated="n/a", Url="https://github.com/MicrosoftDocs/cpp-docs.git" },
-            new RepoInfo{Name="sql-docs", Description="SQL", LastUpdated="n/a", Url="https://github.com/MicrosoftDocs/sql-docs.git" },
-            new RepoInfo{Name="windows-uwp", Description="Windows UWP", LastUpdated="n/a", Url="https://github.com/MicrosoftDocs/windows-uwp.git" },
-            new RepoInfo{Name="dotnet", Description=".NET", LastUpdated="n/a", Url="https://github.com/dotnet/docs.git" }
+                new RepoInfo{Name="cpp-docs", Description="Visual C++", LastUpdated="n/a", Url="https://github.com/MicrosoftDocs/cpp-docs.git" },
+                new RepoInfo{Name="sql-docs", Description="SQL", LastUpdated="n/a", Url="https://github.com/MicrosoftDocs/sql-docs.git" },
+                new RepoInfo{Name="windows-uwp", Description="Windows UWP", LastUpdated="n/a", Url="https://github.com/MicrosoftDocs/windows-uwp.git" },
+                new RepoInfo{Name="dotnet", Description=".NET", LastUpdated="n/a", Url="https://github.com/dotnet/docs.git" },
+                new RepoInfo{Name="windows-desktop-docs", Description="Windows Desktop", LastUpdated="n/a", Url="https://github.com/MicrosoftDocs/windows-desktop-docs.git" },
+                new RepoInfo{Name="windows-desktop-docs-api", Description="Windows Desktop APIs", LastUpdated="n/a", Url="https://github.com/MicrosoftDocs/windows-desktop-docs-api.git" },
             };
             lv_for_download.ItemsSource = repos_available_for_download;
 
@@ -81,33 +83,46 @@ namespace OfflineViewer5
             var dirs = System.IO.Directory.GetDirectories(filePath, "*.*", System.IO.SearchOption.TopDirectoryOnly);
             foreach (var dir in dirs)
             {
-                System.IO.DirectoryInfo info = new System.IO.DirectoryInfo(dir);
-                repos_installed.Add(new RepoInfo() { Name = info.Name, Description = "a repo", LastUpdated = "who knows", Url = "n/a" });
+                if (!dir.Contains("\\index"))
+                {
+                    System.IO.DirectoryInfo info = new System.IO.DirectoryInfo(dir);
+                    string lastUpdatedFile = System.IO.Path.Combine(dir, @".git/FETCH_HEAD"); //date of this file reflects last pull
+                    FileInfo fi = new FileInfo(lastUpdatedFile);
+                    repos_installed.Add(new RepoInfo() { Name = info.Name, Description = "a repo", LastUpdated = fi.CreationTime.ToShortDateString(), Url = "URL tbd" });
+                }
             }
         }
 
         private async void GetRepoInfo_Click(object sender, RoutedEventArgs e)
         {
-            string url = "https://api.github.com/organizations/22479449/repos?type=%22public%22%3Fper_page%3D100&page=2";
+            string url = "https://api.github.com/organizations/22479449/repos?type=%22public%22%3Fper_page%3D100&page=14";
             // string url = "https://api.github.com/orgs/MicrosoftDocs/repos?type=\"public\"";
             List<string> parts = new List<string>();
+            bool canContinue = true;
             do
             {
-
                 string linkHeader = await CreateGetRepoInfoAsync(url);
-                var temp = linkHeader.Split(',');
-                if (temp.Count() > 1)
+                if (!linkHeader.Contains("Error status code"))
                 {
-                    foreach (var header in temp)
-                        if (header.Contains("rel=\"next\""))
-                        {
-                            var match = Regex.Match(header, "<(.*?)>.*");
-                            url = match.Groups[1].ToString();
-                            break;
-                        }
+
+                    var temp = linkHeader.Split(',');
+                    if (temp.Count() > 1)
+                    {
+                        foreach (var header in temp)
+                            if (header.Contains("rel=\"next\""))
+                            {
+                                var match = Regex.Match(header, "<(.*?)>.*");
+                                url = match.Groups[1].ToString();
+                                break;
+                            }
+                    }
+                    await Task.Delay(5000);
                 }
-                await Task.Delay(5000);
-            } while (true);
+                else
+                {
+                    canContinue = false;
+                }
+            } while (canContinue);
 
         }
 
@@ -139,6 +154,7 @@ namespace OfflineViewer5
                     ri.Name = x.GetValue("name").ToString();
                     ri.Description = x.GetValue("description").ToString();
                     ri.LastUpdated = x.GetValue("updated_at").ToString();
+                    ri.Url = x.GetValue("clone_url").ToString();
                     repos_available_for_download.Add(ri);
                 }
 
@@ -151,7 +167,16 @@ namespace OfflineViewer5
             }
             else
             {
-                return String.Format("{0} ({1})", (int)response.StatusCode, response.ReasonPhrase);
+
+                string logFile = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%/documents/git-log.txt");
+                StringBuilder sb = new StringBuilder();
+                foreach (var repo in repos_available_for_download)
+                {
+                    sb.AppendFormat("{0}\t{1}\t{2}\t{3}\n", repo.Name, repo.Description, repo.LastUpdated, repo.Url);
+                }
+                sb.AppendFormat("{0} ({1})\n", (int)response.StatusCode, response.ReasonPhrase);
+                File.WriteAllText(logFile, sb.ToString());
+                return "Error status code";
             }
         }
 
@@ -194,7 +219,14 @@ namespace OfflineViewer5
                 info.FileName = gitPath;
                 info.WorkingDirectory = filePath + ri.Name;
                 Process proc = new Process();
-                info.Arguments = @"git pull origin master";
+                if (ri.Name.Contains("sql-docs"))
+                {
+                    info.Arguments = @"git pull origin live";
+                }
+                else
+                {
+                    info.Arguments = @"git pull origin master";
+                }
                 proc.StartInfo = info;
                 proc.Start();
             }

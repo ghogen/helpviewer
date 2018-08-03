@@ -6,7 +6,8 @@
       xmlns:local="clr-namespace:OfflineViewer5"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Search">
+      Title="Search"
+      Loaded="Page_Loaded">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -16,8 +17,48 @@
         <StackPanel Orientation="Horizontal">
             <TextBox x:Name="tbSearchTerm" Width="400" Text="Search term"></TextBox>
             <Button x:Name="Go" Click="Go_Click">Search</Button>
-        </StackPanel>        
-        <ListView x:Name="lvResults"  Grid.Row="1" ></ListView>
+        </StackPanel>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="240"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <TextBlock FontSize="14" FontWeight="DemiBold" Padding="5,5,5,5">Select the docs sets to search:</TextBlock>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button x:Name="btnSelectAll" Padding="5,5,5,5" Click="btnSelectAll_Click">Select all</Button>
+                <Button x:Name="btnClearAll" Padding="5,5,5,5" Click="btnClearAll_Click">Clear all</Button>
+                </StackPanel>
+            <ListView x:Name="lvFilters">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox Margin="0,0,5,0" IsChecked="{Binding Checked}"></CheckBox>
+                            <TextBlock Text="{Binding Name}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                    </ListView.ItemTemplate>
+            </ListView>
+            </StackPanel>
+        <ListView x:Name="lvResults" Grid.Column="2" Width="800">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock>
+                        <Hyperlink NavigateUri="{Binding FileName}" ><TextBlock Text="{Binding Title}"/></Hyperlink>
+                        </TextBlock>
+                            <TextBlock Text="("></TextBlock>
+                            <TextBlock Text="{Binding DocSet}"></TextBlock>
+                            <TextBlock Text=")"></TextBlock>
+                        </StackPanel>
+
+                        <TextBlock Text="{Binding Lede}" FontWeight="Normal" Margin="5,5,5,5" TextWrapping="Wrap" Width="800"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        </Grid>
     </Grid>
 
 </Page>

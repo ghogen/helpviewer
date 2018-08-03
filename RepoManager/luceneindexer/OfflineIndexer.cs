@@ -13,7 +13,7 @@ namespace LuceneIndexer
 {
     public class OfflineIndexer
     {
-
+        private static string doc_root = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\OfflineHelp2\");
         private static string _luceneDir = @"%USERPROFILE%\OfflineHelp2\index";
         static string indexPath = Environment.ExpandEnvironmentVariables(_luceneDir);
         private static FSDirectory _directoryTemp;
@@ -30,6 +30,13 @@ namespace LuceneIndexer
         }
         private static void _addToLuceneIndex(string filename, IndexWriter writer)
         {
+            if (filename.Contains(@"\includes\"))
+            {
+                return;
+            }
+
+            var docsetmatch = Regex.Match(filename, @"OfflineHelp2\\(.*?)\\");
+            var docset = docsetmatch.Groups[1].ToString();
             // remove older index entry
             var searchQuery = new TermQuery(new Term("FileName", filename));
             writer.DeleteDocuments(searchQuery);
@@ -37,22 +44,46 @@ namespace LuceneIndexer
             // add new index entry
             var doc = new Document();
             string text = File.ReadAllText(filename);
+            string lede = "";
+            if (!filename.Contains("TOC.md") && text.Length > 4) //ensure next call doesn't throw out of range
+            {
+                int start = text.IndexOf("---", 4); //skip over first metadata mark and find end of metadata                
+                if (start >= 0 && text.Length > start + 3)
+                {
+                    start = text.IndexOf("\n#", start + 3); //find start of H1 heading, skipping over newline at end of metadata
+                    if (start > 0 && text.Length > start + 3)
+                    {
+                        start = text.IndexOf("\n", start + 3); // move to end of heading
+                        string sub = text.Substring(start); //get first para
+                        var m = Regex.Match(sub, @"\w.*?\n");
+                        if (m.Length > 0)
+                        {
+                            lede = m.ToString();
+                        }
+                    }
+                }               
 
-            //Regex rgx = new Regex();
-            var match = Regex.Match(text, @"title: ""(.*?) \| Microsoft Docs""\r?\n");
-            var title = match.Groups[1].ToString();
+               
+                var match = Regex.Match(text, @"title: ""?(.*?)( ?\||""|\n)");
+                var title = match.Groups[1].ToString();
 
-            // add lucene fields mapped to db fields
-            doc.Add(new Field("FileName", filename, Field.Store.YES, Field.Index.NOT_ANALYZED));
+                // add lucene fields mapped to db fields
+                doc.Add(new Field("FileName", filename, Field.Store.YES, Field.Index.NOT_ANALYZED));
+                doc.Add(new Field("Lede", lede, Field.Store.YES, Field.Index.NOT_ANALYZED));
+                doc.Add(new Field("Content", text, Field.Store.NO, Field.Index.ANALYZED));
+                
+                Field _t = new Field("Title", title, Field.Store.YES, Field.Index.ANALYZED);
+                _t.Boost = 4.0f;
+                doc.Add(_t);
 
-            doc.Add(new Field("Content", text, Field.Store.NO, Field.Index.ANALYZED));
-            //   doc.Add(new Field("Description", sampleData.Description, Field.Store.YES, Field.Index.ANALYZED));
-            Field _t = new Field("Title", title, Field.Store.YES, Field.Index.ANALYZED);
-            _t.Boost = 4.0f;
-            doc.Add(_t);
-            // doc.GetField("FileName").Boost = 3.0f;
-            // add entry to index
-            writer.AddDocument(doc);
+                //experiment. try boosting docset highest so that docset filters work
+                //rather than filtering on docset field
+                Field ds = new Field("DocSet", docset, Field.Store.YES, Field.Index.NOT_ANALYZED);
+                ds.Boost = 5.0f;
+                doc.Add(ds);
+                // add entry to index
+                writer.AddDocument(doc);
+            }
         }
 
         public static void AddUpdateLuceneIndex(DirectoryInfo dir)

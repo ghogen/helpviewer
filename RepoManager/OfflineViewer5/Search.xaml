@@ -15,7 +15,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
-            <TextBox x:Name="tbSearchTerm" Width="400" Text="Search term"></TextBox>
+            <TextBlock Margin="5,5,5,5" FontSize="14" FontWeight="DemiBold" Padding="5,5,5,5" TextAlignment="Center" VerticalAlignment="Center">Search term:</TextBlock>
+            <TextBox x:Name="tbSearchTerm" Width="400"></TextBox>
             <Button x:Name="Go" Click="Go_Click">Search</Button>
         </StackPanel>
         <Grid Grid.Row="2">

@@ -8,7 +8,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="List">
 
-    <Grid>
+    <Grid RenderTransformOrigin="0.585,0.5">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
@@ -16,14 +16,17 @@
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="400"/>
+            <ColumnDefinition Width="800"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <TextBlock x:Name="Available_repos" Text="Available Repos" Background="AliceBlue" FontSize="16" Margin="5,5,5,5"/>
-        <TextBlock Grid.Column="1"  x:Name="Installed_repos" Text="Installed Repos" Background="AliceBlue" FontSize="16" Margin="5,5,5,5"/>
+        <TextBlock x:Name="Available_repos" Text="Available Doc Sets" Background="AliceBlue" FontSize="16" Margin="5,5,5,5"/>
+        <TextBlock Grid.Column="1"  x:Name="Installed_repos" Text="Installed Doc Sets" Background="AliceBlue" FontSize="16" Margin="5,5,5,5"/>
         <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <Button x:Name="GetRepoInfo" FontSize="14" Click="GetRepoInfo_Click" Padding="5,5,5,5" Margin="0,0,25,0">Get Available Doc Sets</Button>
-            <Button x:Name="CloneRepo" FontSize="14" Click="CloneRepo_Click" Padding="5,5,5,5" Margin="0,0,5,0">Clone Doc Set</Button>
+            <Button x:Name="GetRepoInfo" Click="GetRepoInfo_Click" Padding="5,5,5,5" Margin="0,0,25,0">Get Available Doc Sets</Button>
+            <TextBlock Padding="5,5,5,5" Margin="0,0,5,0">Filter list:</TextBlock>
+            <TextBox x:Name="tbFilter" Width="200" KeyDown="tbFilter_KeyDown" KeyUp="tbFilter_KeyUp"></TextBox>
+            <Button x:Name="CloneRepo" Click="CloneRepo_Click" Padding="5,5,5,5" Margin="0,0,5,0">Clone Selected Doc Set</Button>
+
         </StackPanel>
 
         <ListView 

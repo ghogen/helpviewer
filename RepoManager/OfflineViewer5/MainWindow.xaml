@@ -6,5 +6,5 @@
         xmlns:local="clr-namespace:OfflineViewer5"
         mc:Ignorable="d"
         Source="MainPage.xaml"
-        Title="MainWindow" Height="600" Width="1200">
+        Title="MainWindow" Height="600" Width="1400">
 </NavigationWindow>

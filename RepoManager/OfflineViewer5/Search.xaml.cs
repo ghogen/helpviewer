@@ -19,7 +19,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace OfflineViewer5
+namespace OfflineViewer
 {
     /// <summary>
     /// Interaction logic for Search.xaml

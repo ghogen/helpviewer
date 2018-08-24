@@ -19,7 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace OfflineViewer5
+namespace OfflineViewer
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

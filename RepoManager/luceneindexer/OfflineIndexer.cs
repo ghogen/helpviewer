@@ -11,6 +11,9 @@ using Version = Lucene.Net.Util.Version;
 
 namespace LuceneIndexer
 {
+    /// <summary>
+    ///  Creates a new index of all the docs under OfflineHelp2
+    /// </summary>
     public class OfflineIndexer
     {
         private static string doc_root = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\OfflineHelp2\");
@@ -76,8 +79,7 @@ namespace LuceneIndexer
                 _t.Boost = 4.0f;
                 doc.Add(_t);
 
-                //experiment. try boosting docset highest so that docset filters work
-                //rather than filtering on docset field
+                // Boost docset highest. Might not be needed since we have a separate filter on docset field
                 Field ds = new Field("DocSet", docset, Field.Store.YES, Field.Index.NOT_ANALYZED);
                 ds.Boost = 5.0f;
                 doc.Add(ds);

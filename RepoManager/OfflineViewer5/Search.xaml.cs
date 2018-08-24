@@ -16,8 +16,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
-namespace OfflineViewer5
+namespace OfflineViewer
 {
     /// <summary>
     /// Interaction logic for Search.xaml
@@ -25,17 +27,48 @@ namespace OfflineViewer5
     public partial class Search : Page
     {
 
-        public class SearchFilter
+        private void Search_filter_list_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            int x = 0;
+        }
+
+        public class SearchFilter : INotifyPropertyChanged
         {
             public SearchFilter(string name)
             {
                 Name = name;
             }
+
+            bool _checked = false;
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            // This method is called by the Set accessor of each property.  
+            // The CallerMemberName attribute that is applied to the optional propertyName  
+            // parameter causes the property name of the caller to be substituted as an argument.  
+            private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
+
             public string Name { get; set; }
-            public bool Checked { get; set; }
+            public bool Checked
+            {
+                get
+                {
+                    return _checked;
+                }
+
+                set 
+                {
+                    _checked = value;
+                    NotifyPropertyChanged();
+                }
+            }
         }
 
         ObservableCollection<SearchFilter> search_filter_list = new ObservableCollection<SearchFilter>();
+
         List<string> checked_doc_sets = new List<string>();
         public Search()
         {
@@ -45,7 +78,7 @@ namespace OfflineViewer5
                 search_filter_list.Add(new SearchFilter(v.Name));
             }
             lvFilters.ItemsSource = search_filter_list;
-
+            search_filter_list.CollectionChanged += Search_filter_list_CollectionChanged;
         }
 
         private void Go_Click(object sender, RoutedEventArgs e)
@@ -82,12 +115,19 @@ namespace OfflineViewer5
 
         private void btnClearAll_Click(object sender, RoutedEventArgs e)
         {
+            foreach (var v in search_filter_list)
+            {
+                v.Checked = false;
+            }
 
         }
 
         private void btnSelectAll_Click(object sender, RoutedEventArgs e)
         {
-
+            foreach (var v in search_filter_list)
+            {
+                v.Checked = true;
+            }
         }
 
 
